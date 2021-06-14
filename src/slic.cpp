@@ -197,6 +197,43 @@ vector<int> Slic::find_local_minimum(doubles_matrix vals, int& y, int& x, std::s
   return loc_min;
 }
 
+void Slic::test_window(integers mat, doubles_matrix vals, std::string& type){
+  Rprintf("Initialization: ");
+  /* Clear previous data (if any), and re-initialize it. */
+  clear_data();
+  inits(mat, vals, type);
+  Rprintf("Completed\n");
+
+  int w = 5; /*window size*/
+  int w_side = (w - 1) / 2;
+
+  writable::doubles_matrix window(w, w);
+
+  // for (int l = 0; l < (int) centers.size(); l++) {
+  int l = 10;
+    /* Only compare to pixels in a 2 x step by 2 x step region. */
+    int wc = 0;
+    for (int m = centers[l][1] - step; m < centers[l][1] + step; m++) {
+      int wr = 0;
+      for (int n = centers[l][0] - step; n < centers[l][0] + step; n++) {
+
+        if (m >= 0 && m < mat_dims[1] && n >= 0 && n < mat_dims[0]) {
+
+          for (int w_col = m - w_side; w_col < m + w_side; w_col++){
+            for (int w_row = n - w_side; w_row < n + w_side; w_row++){
+              if (w_col >= 0 && w_col < mat_dims[1] && w_row >= 0 && w_row < mat_dims[0]) {
+                int ncell = w_col + (w_row * mat_dims[1]);
+                window(wr, wc) = vals(ncell, 0);
+              }
+            }
+          }
+        }
+        wr++;
+      }
+      wc++;
+    }
+}
+
 void Slic::generate_superpixels(integers mat, doubles_matrix vals, double step, double nc, std::string& type, int iter){
   // cout << "generate_superpixels" << endl;
   this->step = step;
@@ -308,6 +345,7 @@ void Slic::generate_superpixels(integers mat, doubles_matrix vals, double step, 
   }
   Rprintf("\n");
 }
+
 
 void Slic::create_connectivity(doubles_matrix vals) {
   Rprintf("Cleaning connectivity: ");

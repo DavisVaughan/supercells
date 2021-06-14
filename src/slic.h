@@ -60,6 +60,8 @@ class Slic {
     /* Enforce connectivity for an image. */
     void create_connectivity(doubles_matrix vals);
 
+    void test_window(integers mat, doubles_matrix vals, std::string& type);
+
     writable::doubles_matrix return_centers();
     writable::doubles_matrix return_centers_vals();
     writable::integers_matrix return_clusters();
@@ -86,3 +88,18 @@ list run_slic(integers mat, doubles_matrix vals, int k, double nc, bool con, boo
   }
   return result;
 }
+
+[[cpp11::register]]
+list run_slic2(integers mat, doubles_matrix vals, int k, double nc, bool con, bool centers, std::string type, int iter) {
+
+  const int superpixelsize = 0.5 + double(mat.at(0) * mat.at(1)) / double(k);
+  const int step = sqrt(double(superpixelsize)) + 0.5;
+  // cout << "superpixelsize" << superpixelsize << endl;
+  // cout << "step" << step << endl;
+
+  Slic slic;
+  slic.test_window(mat, vals, type);
+  writable::list result(3);
+  return result;
+}
+

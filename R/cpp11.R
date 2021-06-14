@@ -3,3 +3,7 @@
 run_slic <- function(mat, vals, k, nc, con, centers, type, iter) {
   .Call(`_supercells_run_slic`, mat, vals, k, nc, con, centers, type, iter)
 }
+
+run_slic2 <- function(mat, vals, k, nc, con, centers, type, iter) {
+  .Call(`_supercells_run_slic2`, mat, vals, k, nc, con, centers, type, iter)
+}
