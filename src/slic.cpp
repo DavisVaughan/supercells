@@ -1,5 +1,11 @@
 #include "slic.h"
 #include "distances.h"
+#include <RcppThread.h>
+
+using namespace RcppThread;
+
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::depends(RcppThread)]]
 
 typedef multimap<int, int> IntToIntMap;
 typedef IntToIntMap::iterator mapIter;
@@ -87,7 +93,7 @@ double Slic::get_vals_dist(vector<double>& values1, vector<double>& values2, std
   }
 }
 
-double Slic::compute_dist(int& ci, int& y, int& x, vector<double>& values, std::string& type) {
+double Slic::compute_dist(int& ci, int y, int x, vector<double>& values, std::string& type) {
 
   /*vals distance*/
   double dc = get_vals_dist(centers_vals[ci], values, type);
@@ -185,8 +191,12 @@ void Slic::generate_superpixels(integers mat, doubles_matrix vals, double step, 
     }
     for (int l = 0; l < (int) centers.size(); l++) {
       /* Only compare to pixels in a 2 x step by 2 x step region. */
-      for (int m = centers[l][1] - step; m < centers[l][1] + step; m++) {
-        for (int n = centers[l][0] - step; n < centers[l][0] + step; n++) {
+      ThreadPool pool(3);
+
+      pool.parallelFor(centers[l][1] - step, centers[l][1] + step, [&] (int m) {
+          pool.parallelFor(centers[l][0] - step, centers[l][0] + step, [&, m] (int n) {
+      // for (int m = centers[l][1] - step; m < centers[l][1] + step; m++) {
+      //   for (int n = centers[l][0] - step; n < centers[l][0] + step; n++) {
 
           if (m >= 0 && m < mat_dims[1] && n >= 0 && n < mat_dims[0]) {
 
@@ -208,9 +218,9 @@ void Slic::generate_superpixels(integers mat, doubles_matrix vals, double step, 
             }
 
             /*check NAN*/
-            if (count_na > 0){
-              continue;
-            }
+            // if (count_na > 0){
+            //   continue;
+            // }
             // cpp11::
 
             double d = compute_dist(l, n, m, colour, type);
@@ -222,8 +232,8 @@ void Slic::generate_superpixels(integers mat, doubles_matrix vals, double step, 
               clusters[m][n] = l;
             }
           }
-        }
-      }
+          });
+      });
       // Rprintf("\r");
       // cout << "\r";
     }

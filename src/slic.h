@@ -43,7 +43,7 @@ class Slic {
     double get_vals_dist(vector<double>& values1, vector<double>& values2, std::string& type);
 
     /* Compute the distance between a center and an individual pixel. */
-    double compute_dist(int& ci, int& y, int& x, vector<double>& value, std::string& type);
+    double compute_dist(int& ci, int y, int x, vector<double>& value, std::string& type);
 
     /* Find the pixel with the lowest gradient in a 3x3 surrounding. */
     vector<int> find_local_minimum(doubles_matrix vals, int& y, int& x, std::string& type);
