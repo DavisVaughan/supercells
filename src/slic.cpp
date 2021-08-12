@@ -55,14 +55,14 @@ void Slic::inits(integers mat, doubles_matrix vals, std::string& type) {
         colour.push_back(val);
       }
 
-      vector<int> lm = find_local_minimum(vals, nrowcenter, ncolcenter, type);
+      // vector<int> lm = find_local_minimum(vals, nrowcenter, ncolcenter, type);
 
       /* Generate the center vector. */
-      center.push_back(lm[0]);
-      center.push_back(lm[1]);
+      // center.push_back(lm[0]);
+      // center.push_back(lm[1]);
 
-      // center.push_back(nrowcenter);
-      // center.push_back(ncolcenter);
+      center.push_back(nrowcenter);
+      center.push_back(ncolcenter);
 
       /* Append to vector of centers. */
       centers.push_back(center);
